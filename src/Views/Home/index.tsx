@@ -1,4 +1,4 @@
-import React from 'react';
+import { useEffect, useState } from 'react';
 
 import { FlatList, Image, Text, View } from 'react-native';
 
@@ -9,17 +9,24 @@ import { GAMES } from '../../utils/games';
 
 import { styles } from './style';
 
-
-
 export default function Home() {
+    const [games, setGames] = useState([]);
+
+    useEffect(() => {
+        fetch('http://192.168.0.6:4900/games')
+            .then(res => res.json())
+            .then(data => setGames(data))
+    }, []);
+
+
     return (
         <View style={styles.container}>
             <Image source={logoImg} style={styles.logo} />
 
             <Heading title="Encontre seu duo!" subtitle="Selecione o game que deseja jogar..." />
 
-            <FlatList data={GAMES}
-                keyExtractor={item => item.id}
+            <FlatList data={games}
+                keyExtractor={(item: any) => item.id}
                 renderItem={({ item }) => (
                     <GameCard data={item} />
                 )}
